@@ -1,0 +1,16 @@
+"use client";
+import {addMonths,eachDayOfInterval,endOfMonth,endOfWeek,format,isSameDay,isSameMonth,startOfMonth,startOfWeek,subMonths} from "date-fns";
+import {ChevronLeft,ChevronRight} from "lucide-react";
+import {useMemo,useState} from "react";
+import type {Trade} from "@/types";
+import {Button,Card} from "@/components/ui";
+import {cn,money} from "@/lib/utils";
+export function TradingCalendar({trades}:{trades:Trade[]}){
+ const[month,setMonth]=useState(new Date().getDate()<7?subMonths(new Date(),1):new Date());
+ const days=useMemo(()=>eachDayOfInterval({start:startOfWeek(startOfMonth(month),{weekStartsOn:1}),end:endOfWeek(endOfMonth(month),{weekStartsOn:1})}),[month]);
+ const map=trades.reduce<Record<string,{pnl:number;count:number}>>((a,t)=>{a[t.date]??={pnl:0,count:0};a[t.date].pnl+=t.pnl;a[t.date].count++;return a},{});
+ const rows=Array.from({length:Math.ceil(days.length/7)},(_,i)=>days.slice(i*7,i*7+7));
+ const mp=trades.filter(t=>t.date.startsWith(format(month,"yyyy-MM"))).reduce((s,t)=>s+t.pnl,0);
+ return <Card className="p-5"><div className="mb-5 flex flex-wrap items-center justify-between gap-3"><div><div className="flex items-center gap-3"><h2 className="text-lg font-extrabold">{format(month,"MMMM yyyy")}</h2><span className={cn("rounded-full px-2.5 py-1 text-xs font-bold",mp>=0?"bg-bullish/10 text-bullish":"bg-bearish/10 text-bearish")}>{mp>=0?"+":""}{money(mp)}</span></div><p className="mt-1 text-xs text-muted">Daily realized performance</p></div><div className="flex gap-2"><Button kind="secondary" onClick={()=>setMonth(new Date())}>Today</Button><Button kind="secondary" onClick={()=>setMonth(addMonths(month,-1))}><ChevronLeft size={15}/></Button><Button kind="secondary" onClick={()=>setMonth(addMonths(month,1))}><ChevronRight size={15}/></Button></div></div>
+ <div className="overflow-x-auto"><div className="min-w-[760px]"><div className="grid grid-cols-[repeat(7,minmax(0,1fr))_86px] border-b border-border pb-2 text-[10px] font-bold uppercase tracking-wider text-muted">{["Mon","Tue","Wed","Thu","Fri","Sat","Sun"].map(d=><div key={d} className="px-2">{d}</div>)}<div>Week</div></div>{rows.map((week,wi)=>{const wp=week.reduce((s,d)=>s+(map[format(d,"yyyy-MM-dd")]?.pnl||0),0);return <div key={wi} className="grid grid-cols-[repeat(7,minmax(0,1fr))_86px] divide-x divide-border border-b border-border">{week.map(day=>{const key=format(day,"yyyy-MM-dd"),v=map[key];return <div key={key} className={cn("min-h-[92px] p-2",!isSameMonth(day,month)&&"opacity-25")}><span className={cn("grid size-6 place-items-center rounded-lg text-[11px] text-muted",isSameDay(day,new Date())&&"bg-primary text-white")}>{format(day,"d")}</span>{v?<><p className={cn("mt-2 text-xs font-extrabold",v.pnl>=0?"text-bullish":"text-bearish")}>{v.pnl>=0?"+":""}{money(v.pnl)}</p><p className="mt-1 text-[9px] text-muted">{v.count} trade{v.count===1?"":"s"}</p></>:<span className="mt-3 block size-1 rounded-full bg-border"/>}</div>})}<div className="flex flex-col justify-center p-2"><span className="text-[9px] text-muted">Week {wi+1}</span><b className={cn("mt-1 text-[11px]",wp>=0?"text-bullish":"text-bearish")}>{wp>=0?"+":""}{money(wp)}</b></div></div>})}</div></div></Card>
+}
