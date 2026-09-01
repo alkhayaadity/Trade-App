@@ -135,7 +135,7 @@ create policy strategies_own_all on public.strategies for all to authenticated u
 create policy trades_own_all on public.trades for all to authenticated using((select auth.uid())=user_id) with check((select auth.uid())=user_id);
 create policy screenshots_own_all on public.trade_screenshots for all to authenticated using((select auth.uid())=user_id) with check((select auth.uid())=user_id);
 create policy conversations_own_all on public.ai_conversations for all to authenticated using((select auth.uid())=user_id) with check((select auth.uid())=user_id);
-create policy messages_own_all on public.ai_messages for all to authenticated using((select auth.uid())=user_id) with check((select auth.uid())=user_id);
+create policy messages_own_all on public.ai_messages for all to authenticated using((select auth.uid())=user_id) with check((select auth.uid())=user_id and exists(select 1 from public.ai_conversations c where c.id=conversation_id and c.user_id=(select auth.uid())));
 create policy analysis_own_all on public.ai_analysis for all to authenticated using((select auth.uid())=user_id) with check((select auth.uid())=user_id);
 create policy weekly_reviews_own_all on public.weekly_reviews for all to authenticated using((select auth.uid())=user_id) with check((select auth.uid())=user_id);
 create policy monthly_reviews_own_all on public.monthly_reviews for all to authenticated using((select auth.uid())=user_id) with check((select auth.uid())=user_id);
@@ -144,4 +144,4 @@ create policy settings_own_all on public.user_settings for all to authenticated 
 insert into storage.buckets(id,name,public,file_size_limit,allowed_mime_types) values('trade-screenshots','trade-screenshots',false,10485760,array['image/png','image/jpeg','image/webp']) on conflict(id) do update set public=false;
 create policy trade_screenshots_select on storage.objects for select to authenticated using(bucket_id='trade-screenshots' and (storage.foldername(name))[1]=(select auth.uid()::text));
 create policy trade_screenshots_insert on storage.objects for insert to authenticated with check(bucket_id='trade-screenshots' and (storage.foldername(name))[1]=(select auth.uid()::text));
-create policy trade_screenshots_delete on storage.objects for delete to authenticated using(bucket_id='trade-screenshots' and (storage.foldername(name))[1]=(select auth.uid()::text));
+create policy trade_screenshots_update on storage.objects for update to authenticated using(bucket_id='trade-screenshots' and (storage.foldername(name))[1]=(select auth.uid()::text)) with check(bucket_id='trade-screenshots' and (storage.foldername(name))[1]=(select auth.uid()::text));\ncreate policy trade_screenshots_delete on storage.objects for delete to authenticated using(bucket_id='trade-screenshots' and (storage.foldername(name))[1]=(select auth.uid()::text));
