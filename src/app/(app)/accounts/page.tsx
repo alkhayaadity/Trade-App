@@ -1,0 +1,1 @@
+import {AccountsManager} from "@/components/managers";import {getData} from "@/lib/data";export default async function Accounts(){const d=await getData();return <AccountsManager initial={d.accounts} isDemo={d.isDemo}/>}
