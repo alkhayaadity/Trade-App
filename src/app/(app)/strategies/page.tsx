@@ -1,0 +1,1 @@
+import {StrategiesManager} from "@/components/managers";import {getData} from "@/lib/data";export default async function Strategies(){const d=await getData();return <StrategiesManager initial={d.strategies} trades={d.trades} isDemo={d.isDemo}/>}
