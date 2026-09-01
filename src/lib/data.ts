@@ -1,5 +1,5 @@
 import {account as demoAccount,strategies as demoStrategies,trades as demoTrades} from "@/lib/demo";
-import {configured,serverClient} from "@/lib/supabase";
+import {configured,serverClient} from "@/lib/supabase-server";
 import type {Account,Strategy,Trade} from "@/types";
 export async function getData(){
  if(!configured()||process.env.NEXT_PUBLIC_DEMO_MODE==="true")return{isDemo:true,user:{name:"Demo Trader",email:"demo@fomotrade.site"},accounts:[demoAccount],strategies:demoStrategies,trades:demoTrades};
