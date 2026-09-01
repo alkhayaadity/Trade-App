@@ -3,7 +3,7 @@ import Link from "next/link";
 import {usePathname,useRouter} from "next/navigation";
 import {useState} from "react";
 import {BarChart3,BookOpenText,Bot,CalendarDays,ChevronLeft,ChevronRight,CirclePlus,CreditCard,LayoutDashboard,LogOut,Menu,Settings,Sparkles,Target,X} from "lucide-react";
-import {browserClient,configured} from "@/lib/supabase";
+import {browserClient,configured} from "@/lib/supabase-client";
 import {cn,money} from "@/lib/utils";
 import type {Account} from "@/types";
 const nav=[["/dashboard","Dashboard",LayoutDashboard],["/journal","Journal",BookOpenText],["/add-trade","Add Trade",CirclePlus],["/calendar","Calendar",CalendarDays],["/analytics","Analytics",BarChart3],["/strategies","Strategies",Target],["/accounts","Accounts",CreditCard],["/ai-analyst","AI Analyst",Bot],["/settings","Settings",Settings]] as const;
