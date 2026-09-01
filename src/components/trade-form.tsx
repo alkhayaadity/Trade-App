@@ -2,7 +2,7 @@
 import {FormEvent,useMemo,useState} from "react";
 import {Calculator,CheckCircle2,ImagePlus,LoaderCircle,Save} from "lucide-react";
 import type {Account,Strategy} from "@/types";
-import {browserClient,configured} from "@/lib/supabase";
+import {browserClient,configured} from "@/lib/supabase-client";
 import {Button,Card,Input,Label,Select,Textarea} from "@/components/ui";
 import {money} from "@/lib/utils";
 export function TradeForm({accounts,strategies,isDemo}:{accounts:Account[];strategies:Strategy[];isDemo:boolean}){
