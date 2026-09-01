@@ -1,6 +1,6 @@
 import OpenAI from "openai";
 import {NextResponse} from "next/server";
-import {configured,serverClient} from "@/lib/supabase";
+import {configured,serverClient} from "@/lib/supabase-server";
 import {trades as demoTrades} from "@/lib/demo";
 import {stats} from "@/lib/utils";
 import type {Trade} from "@/types";
